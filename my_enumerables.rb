@@ -59,4 +59,17 @@ module Enumerable
     end
     true
   end
+
+  def my_count(items = 0)
+    total = 0
+    size.times do |item|
+      case items
+      when 0
+        return size
+      when self[item]
+        total += 1
+      end
+    end
+    total
+  end
 end
