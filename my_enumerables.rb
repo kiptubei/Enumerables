@@ -26,4 +26,15 @@ module Enumerable
       return new_ar
     end
   end
+
+  def my_all
+    return to_enum(:my_each) unless block_given?
+
+    result = true
+    size.times do |item|
+      result = yield(self[item])
+      return result if result == false
+    end
+    result
+  end
 end
