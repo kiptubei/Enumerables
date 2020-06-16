@@ -49,4 +49,14 @@ module Enumerable
     result
   end
 
+  def my_none?
+    return to_enum(:my_each) unless block_given?
+
+    result = true
+    size.times do |item|
+      result = yield(self[item])
+      return false if result == true
+    end
+    true
+  end
 end
