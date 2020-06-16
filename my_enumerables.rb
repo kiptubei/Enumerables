@@ -27,7 +27,7 @@ module Enumerable
     end
   end
 
-  def my_all
+  def my_all?
     return to_enum(:my_each) unless block_given?
 
     result = true
@@ -37,4 +37,16 @@ module Enumerable
     end
     result
   end
+
+  def my_any?
+    return to_enum(:my_each) unless block_given?
+
+    result = false
+    size.times do |item|
+      result = yield(self[item])
+      return result if result == true
+    end
+    result
+  end
+
 end
