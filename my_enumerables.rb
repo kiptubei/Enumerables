@@ -8,7 +8,7 @@ module Enumerable
   end
 
   def my_each_with_index
-    return to_enum(:my_each) unless block_given?
+    return to_enum(:my_each_with_index) unless block_given?
 
     size.times do |item|
       yield(self[item], item)
@@ -16,7 +16,7 @@ module Enumerable
   end
 
   def my_select
-    return to_enum(:my_each) unless block_given?
+    return to_enum(:my_select) unless block_given?
 
     size.times do |_item|
       new_ar = []
@@ -28,7 +28,7 @@ module Enumerable
   end
 
   def my_all?
-    return to_enum(:my_each) unless block_given?
+    return to_enum(:my_all) unless block_given?
 
     result = true
     size.times do |item|
@@ -39,7 +39,7 @@ module Enumerable
   end
 
   def my_any?
-    return to_enum(:my_each) unless block_given?
+    return to_enum(:my_any) unless block_given?
 
     result = false
     size.times do |item|
@@ -50,7 +50,7 @@ module Enumerable
   end
 
   def my_none?
-    return to_enum(:my_each) unless block_given?
+    return to_enum(:my_none) unless block_given?
 
     result = true
     size.times do |item|
@@ -73,24 +73,34 @@ module Enumerable
     total
   end
 
-  def my_map
-    return to_enum(:my_each) unless block_given?
-
-    new_ar = []
-    size.times do |item|
-      new_ar << yield(self[item])
-    end
-    new_ar
-  end
-
   def my_inject
-    return to_enum(:my_each) unless block_given?
+    return to_enum(:my_inject) unless block_given?
 
     total = self[0]
     (size - 1).times do |item|
       total = yield(total, self[item + 1])
     end
     total
+  end
+
+  def my_map(proc_call = nil)
+    new_ar = []
+    case proc_call
+
+    when nil
+      return to_enum(:my_map) unless block_given?
+
+      size.times do |item|
+        new_ar << yield(self[item])
+      end
+    else
+
+      size.times do |item|
+        new_ar << proc_call.call(self[item])
+      end
+    end
+
+    new_ar
   end
 end
 
