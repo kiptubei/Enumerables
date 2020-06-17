@@ -10,9 +10,11 @@ module Enumerable
   def my_each_with_index
     return to_enum(:my_each_with_index) unless block_given?
 
+    new_ar = []
     size.times do |item|
-      yield(self[item], item)
+      new_ar << yield(self[item], item)
     end
+    new_ar
   end
 
   def my_select
@@ -27,36 +29,60 @@ module Enumerable
     end
   end
 
-  def my_all?
-    return to_enum(:my_all) unless block_given?
-
+  def my_all?(arg = nil)
     result = true
-    size.times do |item|
-      result = yield(self[item])
-      return result if result == false
+    case arg
+    when nil
+      return to_enum(:my_all) unless block_given?
+
+      size.times do |item|
+        result = yield(self[item])
+        return result if result == false
+      end
+    else
+      size.times do |item|
+        result = self[item] == arg
+        return result if result == false
+      end
     end
     result
   end
 
-  def my_any?
-    return to_enum(:my_any) unless block_given?
-
+  def my_any?(arg = nil)
     result = false
-    size.times do |item|
-      result = yield(self[item])
-      return result if result == true
+    case arg
+    when nil
+      return to_enum(:my_any) unless block_given?
+
+      size.times do |item|
+        result = yield(self[item])
+        return result if result == true
+      end
+    else
+      size.times do |item|
+        result = self[item] == arg
+        return result if result == true
+      end
     end
     result
   end
 
-  def my_none?
-    return to_enum(:my_none) unless block_given?
-
+  def my_none?(arg = nil)
     result = true
-    size.times do |item|
-      result = yield(self[item])
-      return false if result == true
-    end
+    case arg
+    when nil
+      return to_enum(:my_none) unless block_given?
+
+      size.times do |item|
+        result = yield(self[item])
+        return false if result == true
+      end
+    else
+      size.times do |item|
+        result = self[item] == arg
+        return false if result == true
+      end
+  end
     true
   end
 
@@ -73,13 +99,43 @@ module Enumerable
     total
   end
 
-  def my_inject
-    return to_enum(:my_inject) unless block_given?
+  def my_inject(num = nil)
+    arr = self
+    case num
+    when nil
+      if self.class == Range
+        arr = []
+        each do |i|
+          arr << i
+        end
+        arr
+        end
+      return to_enum(:my_inject) unless block_given?
 
-    total = self[0]
-    (size - 1).times do |item|
-      total = yield(total, self[item + 1])
-    end
+      total = arr[0]
+      (size - 1).times do |item|
+        total = yield(total, arr[item + 1])
+      end
+    else
+      if self.class == Range
+        arr = []
+        each do |i|
+          arr << i
+        end
+        arr
+      end
+      if block_given?
+        total = num
+        size.times do |item|
+          total = yield(total, arr[item])
+        end
+      else
+        total = num
+        size.times do |item|
+          total += arr[item]
+        end
+  end
+        end
     total
   end
 
@@ -109,3 +165,13 @@ def multiply_els(array)
     new_st * friend
   end
 end
+
+# num_array = [1,2,3,4,5,6]
+# # num_array.each_with_index{
+# #   |item| puts item
+# # }
+
+# # print [2, 3, 5, 6, 1, 7, 5, 3, 9].reduce { |sum, n| sum - n }
+# print (5..10).my_inject(1)
+# puts ' '
+# print (5..10).reduce(1)
