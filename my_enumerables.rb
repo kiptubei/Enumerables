@@ -72,4 +72,30 @@ module Enumerable
     end
     total
   end
+
+  def my_map
+    return to_enum(:my_each) unless block_given?
+
+    new_ar = []
+    size.times do |item|
+      new_ar << yield(self[item])
+    end
+    new_ar
+  end
+
+  def my_inject
+    return to_enum(:my_each) unless block_given?
+
+    total = self[0]
+    (size - 1).times do |item|
+      total = yield(total, self[item + 1])
+    end
+    total
+  end
+end
+
+def multiply_els(array)
+  array.my_inject do |new_st, friend|
+    new_st * friend
+  end
 end
