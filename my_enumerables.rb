@@ -2,9 +2,7 @@ module Enumerable
   def my_each
     return to_enum(:my_each) unless block_given?
 
-    size.times do |item|
-      yield(self[item])
-    end
+    size.times { |item| yield(self[item]) }
   end
 
   def my_each_with_index
@@ -12,9 +10,7 @@ module Enumerable
 
     arr = to_a
     new_ar = []
-    size.times do |item|
-      new_ar << yield(arr[item], item)
-    end
+    size.times { |item| new_ar << yield(arr[item], item) }
     new_ar
   end
 
@@ -23,9 +19,7 @@ module Enumerable
 
     size.times do |_item|
       new_ar = []
-      my_each do |item|
-        new_ar << item if yield(item)
-      end
+      my_each { |item| new_ar << item if yield(item) }
       return new_ar
     end
   end
@@ -127,26 +121,17 @@ module Enumerable
   def my_map(proc_call = nil)
     new_ar = []
     case proc_call
-
     when nil
       return to_enum(:my_map) unless block_given?
 
-      size.times do |item|
-        new_ar << yield(self[item])
-      end
+      size.times { |item| new_ar << yield(self[item]) }
     else
-
-      size.times do |item|
-        new_ar << proc_call.call(self[item])
-      end
+      size.times { |item| new_ar << proc_call.call(self[item]) }
     end
-
     new_ar
   end
 end
 
 def multiply_els(array)
-  array.my_inject do |new_st, friend|
-    new_st * friend
-  end
+  array.my_inject { |new_st, friend| new_st * friend }
 end
