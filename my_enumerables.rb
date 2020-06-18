@@ -99,7 +99,7 @@ module Enumerable
     total
   end
 
-  def my_inject(num = nil)
+  def my_inject(num = nil, symb = nil)
     arr = self
     case num
     when nil
@@ -116,6 +116,40 @@ module Enumerable
       (size - 1).times do |item|
         total = yield(total, arr[item + 1])
       end
+    when Integer
+      case symb
+      when nil
+        if self.class == Range
+          arr = []
+          each do |i|
+            arr << i
+          end
+          arr
+        end
+        if block_given?
+          total = num
+          size.times do |item|
+            total = yield(total, arr[item])
+          end
+        else
+          total = num
+          size.times do |item|
+            total += arr[item]
+          end
+             end
+      else
+        if self.class == Range
+          arr = []
+          each do |i|
+            arr << i
+          end
+          arr
+            end
+        total = num
+        size.times do |item|
+          total = total.send symb, arr[item]
+        end
+          end
     else
       if self.class == Range
         arr = []
@@ -124,20 +158,14 @@ module Enumerable
         end
         arr
       end
-      if block_given?
-        total = num
-        size.times do |item|
-          total = yield(total, arr[item])
-        end
-      else
-        total = num
-        size.times do |item|
-          total += arr[item]
-        end
-  end
-        end
+      total = arr[0]
+      (size - 1).times do |item|
+        total = total.send num, arr[item + 1]
+      end
+    end
+
     total
-  end
+end
 
   def my_map(proc_call = nil)
     new_ar = []
@@ -165,13 +193,3 @@ def multiply_els(array)
     new_st * friend
   end
 end
-
-# num_array = [1,2,3,4,5,6]
-# # num_array.each_with_index{
-# #   |item| puts item
-# # }
-
-# # print [2, 3, 5, 6, 1, 7, 5, 3, 9].reduce { |sum, n| sum - n }
-# print (5..10).my_inject(1)
-# puts ' '
-# print (5..10).reduce(1)
