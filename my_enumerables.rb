@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ModuleLength
 module Enumerable
   def my_each
     return to_enum(:my_each) unless block_given?
@@ -135,3 +136,5 @@ end
 def multiply_els(array)
   array.my_inject { |new_st, friend| new_st * friend }
 end
+
+# rubocop:enable Metrics/ModuleLength
