@@ -10,9 +10,18 @@ module Enumerable
   def my_each_with_index
     return to_enum(:my_each_with_index) unless block_given?
 
+    arr = self
+    if self.class == Range
+      arr = []
+      each do |i|
+        arr << i
+      end
+      arr
+    end
+
     new_ar = []
     size.times do |item|
-      new_ar << yield(self[item], item)
+      new_ar << yield(arr[item], item)
     end
     new_ar
   end
@@ -82,7 +91,7 @@ module Enumerable
         result = self[item] == arg
         return false if result == true
       end
-  end
+    end
     true
   end
 
@@ -101,15 +110,15 @@ module Enumerable
 
   def my_inject(num = nil, symb = nil)
     arr = self
+    if self.class == Range
+      arr = []
+      each do |i|
+        arr << i
+      end
+      arr
+    end
     case num
     when nil
-      if self.class == Range
-        arr = []
-        each do |i|
-          arr << i
-        end
-        arr
-        end
       return to_enum(:my_inject) unless block_given?
 
       total = arr[0]
@@ -117,55 +126,31 @@ module Enumerable
         total = yield(total, arr[item + 1])
       end
     when Integer
+      total = num
       case symb
       when nil
-        if self.class == Range
-          arr = []
-          each do |i|
-            arr << i
-          end
-          arr
-        end
         if block_given?
-          total = num
           size.times do |item|
             total = yield(total, arr[item])
           end
         else
-          total = num
           size.times do |item|
             total += arr[item]
           end
-             end
+        end
       else
-        if self.class == Range
-          arr = []
-          each do |i|
-            arr << i
-          end
-          arr
-            end
-        total = num
         size.times do |item|
           total = total.send symb, arr[item]
         end
-          end
-    else
-      if self.class == Range
-        arr = []
-        each do |i|
-          arr << i
-        end
-        arr
       end
+    else
       total = arr[0]
       (size - 1).times do |item|
         total = total.send num, arr[item + 1]
       end
     end
-
     total
-end
+  end
 
   def my_map(proc_call = nil)
     new_ar = []
