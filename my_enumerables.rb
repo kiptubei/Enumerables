@@ -10,15 +10,7 @@ module Enumerable
   def my_each_with_index
     return to_enum(:my_each_with_index) unless block_given?
 
-    arr = self
-    if self.class == Range
-      arr = []
-      each do |i|
-        arr << i
-      end
-      arr
-    end
-
+    arr = to_a
     new_ar = []
     size.times do |item|
       new_ar << yield(arr[item], item)
@@ -109,45 +101,25 @@ module Enumerable
   end
 
   def my_inject(num = nil, symb = nil)
-    arr = self
-    if self.class == Range
-      arr = []
-      each do |i|
-        arr << i
-      end
-      arr
-    end
+    arr = to_a
+    total = arr[0]
     case num
     when nil
       return to_enum(:my_inject) unless block_given?
 
-      total = arr[0]
-      (size - 1).times do |item|
-        total = yield(total, arr[item + 1])
-      end
+      (size - 1).times { |item| total = yield(total, arr[item + 1]) }
     when Integer
       total = num
-      case symb
-      when nil
-        if block_given?
-          size.times do |item|
-            total = yield(total, arr[item])
-          end
+      size.times do |item|
+        case symb
+        when nil
+          block_given? ? total = yield(total, arr[item]) : total += arr[item]
         else
-          size.times do |item|
-            total += arr[item]
-          end
-        end
-      else
-        size.times do |item|
           total = total.send symb, arr[item]
         end
       end
     else
-      total = arr[0]
-      (size - 1).times do |item|
-        total = total.send num, arr[item + 1]
-      end
+      (size - 1).times { |item| total = total.send num, arr[item + 1] }
     end
     total
   end
