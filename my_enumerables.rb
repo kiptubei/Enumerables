@@ -148,3 +148,8 @@ def multiply_els(array)
 end
 
 # rubocop:enable Metrics/ModuleLength
+
+
+array = [1, 2, 3, 4]
+array.my_each_with_index { |item, index| puts "#{item} => #{index}" }
+array.each_with_index { |item, index| puts "#{item} => #{index}" }
