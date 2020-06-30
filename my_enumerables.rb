@@ -54,12 +54,18 @@ module Enumerable
     result = false
     case arg
     when nil
-      return to_enum(:my_any) unless block_given?
-
-      size.times do |item|
-        result = yield(self[item])
-        return result if result == true
+      if block_given?
+        size.times do |item|
+          result = yield(self[item])
+          return result if result == true
+        end
+      else
+        size.times do |item|
+          result = self[item] != arg
+          return result if result == false
+        end
       end
+
     else
       size.times do |item|
         result = self[item] == arg
@@ -148,8 +154,3 @@ def multiply_els(array)
 end
 
 # rubocop:enable Metrics/ModuleLength
-
-
-array = [1, 2, 3, 4]
-array.my_each_with_index { |item, index| puts "#{item} => #{index}" }
-array.each_with_index { |item, index| puts "#{item} => #{index}" }
