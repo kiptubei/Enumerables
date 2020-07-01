@@ -1,9 +1,11 @@
 # rubocop:disable Metrics/ModuleLength
+# rubocop:disable Metrics/MethodLength
 module Enumerable
   def my_each
     return to_enum(:my_each) unless block_given?
 
     size.times { |item| yield(self[item]) }
+    self
   end
 
   def my_each_with_index
@@ -29,11 +31,16 @@ module Enumerable
     result = true
     case arg
     when nil
-      return to_enum(:my_all) unless block_given?
-
-      size.times do |item|
-        result = yield(self[item])
-        return result if result == false
+      if block_given?
+        size.times do |item|
+          result = yield(self[item])
+          return result if result == false
+        end
+      else
+        size.times do |item|
+          result = self[item] != arg
+          return result if result == false
+        end
       end
     else
       size.times do |item|
@@ -48,12 +55,18 @@ module Enumerable
     result = false
     case arg
     when nil
-      return to_enum(:my_any) unless block_given?
-
-      size.times do |item|
-        result = yield(self[item])
-        return result if result == true
+      if block_given?
+        size.times do |item|
+          result = yield(self[item])
+          return result if result == true
+        end
+      else
+        size.times do |item|
+          result = self[item] != arg
+          return result if result == false
+        end
       end
+
     else
       size.times do |item|
         result = self[item] == arg
@@ -82,12 +95,14 @@ module Enumerable
     true
   end
 
-  def my_count(items = 0)
+  def my_count(items = nil)
     total = 0
     size.times do |item|
       case items
-      when 0
-        return size
+      when nil
+        return size unless block_given?
+
+        total += 1 if yield(self[item])
       when self[item]
         total += 1
       end
@@ -138,3 +153,4 @@ def multiply_els(array)
 end
 
 # rubocop:enable Metrics/ModuleLength
+# rubocop:enable Metrics/MethodLength
