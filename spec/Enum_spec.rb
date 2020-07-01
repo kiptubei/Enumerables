@@ -123,5 +123,34 @@ describe Enumerable do
         expect(array.my_inject(2, :-)).to eq(-8)
       end
     end
-  end
+	end
+	
+	describe '#my_map' do
+		let(:proc_call) { proc {|item| item**2 }}
+		context 'when a proc is not given as an argument' do
+			context 'and a block is given' do
+				it 'returns a new array according to the yield of the block' do
+					expect(array.my_map { |item| item**2 }).to eq([1, 4, 9, 16])
+				end
+			end
+		end
+		context 'when a proc is given as an argument' do
+			it 'returns a new array according to the yield of the proc' do
+				expect(array.my_map(proc_call)).to eq([1, 4, 9, 16])
+			end
+			context 'and a block is given' do
+				it 'returns a new array according to the yield of the proc' do
+					expect(array.my_map(proc_call) { |item| item**3 }).to eq([1, 4, 9, 16]) 
+				end
+			end
+		end
+	end
+
+	describe '#multiply_els' do
+		context 'when an array is given as an argument' do
+			it 'returns the product of all elements' do
+				expect(multiply_els(array)).to eq(array.my_inject(:*))
+			end
+		end
+	end
 end
