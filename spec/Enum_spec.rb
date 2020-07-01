@@ -1,7 +1,7 @@
 require_relative '../my_enumerables.rb'
 
 describe Enumerable do
-	let(:array) { [1, 2, 3, 4] }
+  let(:array) { [1, 2, 3, 4] }
   describe '#my_each' do
     context 'when an array is given' do
       it 'it return the original array' do
@@ -53,7 +53,6 @@ describe Enumerable do
     end
   end
   describe '#my_any?' do
-
     let(:array_of_nils) { [nil, nil, nil] }
     context 'when block given' do
       it 'return true if just one item is true' do
@@ -72,56 +71,56 @@ describe Enumerable do
         expect(array_of_nils.my_any?).to eq(false)
       end
     end
-	end
-	
-	describe '#my_none?' do
-		context 'when block given' do
-			it 'returns true if no item is equal to the given argument' do
-				expect(array.my_none?(7)).to eq(true)
-			end
+  end
 
-			it 'returns false if at least one item is equal to the given argument' do
-				expect(array.my_none?(2)).to eq(false)
-			end
-		end		
-	end
-
-	describe '#my_count' do
-		context 'when no argument is given' do
-			it 'returns the count of the condition passed into the block' do
-				expect(array.my_count { |item| item > 2 }).to eq(2)
-			end
-
-			it 'returns the size of the array if no block is given' do
-				expect(array.my_count).to eq(4)
-			end
-		end
-
-		context 'when argument is given' do
-			it 'returns the count of the value passed in the argument' do
-				expect(array.my_count(3)).to eq(1)
-			end
-		end
-	end
-
-	describe '#my_inject' do
-    context "when a block is given" do
-      it "return one element" do
-        expect(array.my_inject{|sum,num| sum+=num}).to eq(10)
+  describe '#my_none?' do
+    context 'when block given' do
+      it 'returns true if no item is equal to the given argument' do
+        expect(array.my_none?(7)).to eq(true)
       end
-      it "return one element incliding the param if given" do
-        expect(array.my_inject(2){|sum,num| sum-=num}).to eq(-8)
-      end
-      it "ignore the block when it get a symbol as a param" do
-        expect(array.my_inject(2,:+){|sum,num| sum-=num}).to eq(12)
+
+      it 'returns false if at least one item is equal to the given argument' do
+        expect(array.my_none?(2)).to eq(false)
       end
     end
-    context "when no block is given" do
-      it "return the sum of the array if there is no symbl" do
-        expect(array.my_inject(2)).to eq(12) 
+  end
+
+  describe '#my_count' do
+    context 'when no argument is given' do
+      it 'returns the count of the condition passed into the block' do
+        expect(array.my_count { |item| item > 2 }).to eq(2)
       end
-      it "applay the symbl param to the array" do
-        expect(array.my_inject(2,:-)).to eq(-8)
+
+      it 'returns the size of the array if no block is given' do
+        expect(array.my_count).to eq(4)
+      end
+    end
+
+    context 'when argument is given' do
+      it 'returns the count of the value passed in the argument' do
+        expect(array.my_count(3)).to eq(1)
+      end
+    end
+  end
+
+  describe '#my_inject' do
+    context 'when a block is given' do
+      it 'return one element' do
+        expect(array.my_inject { |sum, num| sum += num }).to eq(10)
+      end
+      it 'return one element incliding the param if given' do
+        expect(array.my_inject(2) { |sum, num| sum -= num }).to eq(-8)
+      end
+      it 'ignore the block when it get a symbol as a param' do
+        expect(array.my_inject(2, :+) { |sum, num| sum -= num }).to eq(12)
+      end
+    end
+    context 'when no block is given' do
+      it 'return the sum of the array if there is no symbl' do
+        expect(array.my_inject(2)).to eq(12)
+      end
+      it 'applay the symbl param to the array' do
+        expect(array.my_inject(2, :-)).to eq(-8)
       end
     end
   end
