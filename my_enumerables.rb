@@ -3,8 +3,8 @@ module Enumerable
   def my_each
     return to_enum(:my_each) unless block_given?
 
-    size.times { |item|  yield(self[item]) }
-    return self
+    size.times { |item| yield(self[item]) }
+    self
   end
 
   def my_each_with_index
@@ -100,7 +100,7 @@ module Enumerable
       case items
       when nil
         if block_given?
-           total +=1  if yield(self[item])
+          total += 1 if yield(self[item])
         else
           return size
         end
