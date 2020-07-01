@@ -140,7 +140,7 @@ describe Enumerable do
           expect(array.my_map { |item| item**2 }).to eq([1, 4, 9, 16])
         end
       end
-    end
+    end 
     context 'when a proc is given as an argument' do
       it 'returns a new array according to the yield of the proc' do
         expect(array.my_map(proc_call)).to eq([1, 4, 9, 16])
