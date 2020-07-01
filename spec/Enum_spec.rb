@@ -17,10 +17,14 @@ describe Enumerable do
     let(:string_array) { %w[cat dog wombat] }
     context 'when an array is given' do
       it 'outputs the idexes with their items' do
-        expect { array.my_each_with_index { |item, index| puts "#{item} => #{index}" } }.to output("1 => 0\n2 => 1\n3 => 2\n4 => 3\n").to_stdout
+        expect { array.my_each_with_index { |item, index| puts "#{item} => #{index}" } }.to output(
+          "1 => 0\n2 => 1\n3 => 2\n4 => 3\n"
+        ).to_stdout
       end
       it 'outputs strings with their indexes' do
-        expect { string_array.my_each_with_index { |item, index| puts "#{item} => #{index}" } }.to output("cat => 0\ndog => 1\nwombat => 2\n").to_stdout
+        expect { string_array.my_each_with_index { |item, index| puts "#{item} => #{index}" } }.to output(
+          "cat => 0\ndog => 1\nwombat => 2\n"
+        ).to_stdout
       end
     end
   end
@@ -37,17 +41,18 @@ describe Enumerable do
     let(:array_of_zeroes) { [0, 0, 0, 0] }
     context 'when block is  given' do
       it 'return true if all items are true' do
-        expect(array.my_all? { |item| item > 2 }).to eq(false)
         expect(array.my_all? { |item| item.class == Integer }).to eq(true)
       end
     end
     context 'when there is no block given' do
       it "return true if the array dosn't containe a nil value" do
         expect(array.my_all?).to eq(true)
+      end
+      it 'return false if the array containe a nil value' do
         expect(array_with_nil.my_all?).to eq(false)
       end
+
       it 'return true if all the elements equal to the param given' do
-        expect(array.my_all?(1)).to eq(false)
         expect(array_of_zeroes.my_all?(0)).to eq(true)
       end
     end
@@ -68,6 +73,8 @@ describe Enumerable do
       end
       it 'return true if no param is given and not all values are equal to nil' do
         expect(array.my_any?).to eq(true)
+      end
+      it 'return false if all values are nil' do
         expect(array_of_nils.my_any?).to eq(false)
       end
     end
@@ -106,13 +113,13 @@ describe Enumerable do
   describe '#my_inject' do
     context 'when a block is given' do
       it 'return one element' do
-        expect(array.my_inject { |sum, num| sum += num }).to eq(10)
+        expect(array.my_inject { |sum, num| sum + num }).to eq(10)
       end
       it 'return one element incliding the param if given' do
-        expect(array.my_inject(2) { |sum, num| sum -= num }).to eq(-8)
+        expect(array.my_inject(2) { |sum, num| sum - num }).to eq(-8)
       end
       it 'ignore the block when it get a symbol as a param' do
-        expect(array.my_inject(2, :+) { |sum, num| sum -= num }).to eq(12)
+        expect(array.my_inject(2, :+) { |sum, num| sum - num }).to eq(12)
       end
     end
     context 'when no block is given' do
@@ -123,34 +130,34 @@ describe Enumerable do
         expect(array.my_inject(2, :-)).to eq(-8)
       end
     end
-	end
-	
-	describe '#my_map' do
-		let(:proc_call) { proc {|item| item**2 }}
-		context 'when a proc is not given as an argument' do
-			context 'and a block is given' do
-				it 'returns a new array according to the yield of the block' do
-					expect(array.my_map { |item| item**2 }).to eq([1, 4, 9, 16])
-				end
-			end
-		end
-		context 'when a proc is given as an argument' do
-			it 'returns a new array according to the yield of the proc' do
-				expect(array.my_map(proc_call)).to eq([1, 4, 9, 16])
-			end
-			context 'and a block is given' do
-				it 'returns a new array according to the yield of the proc' do
-					expect(array.my_map(proc_call) { |item| item**3 }).to eq([1, 4, 9, 16]) 
-				end
-			end
-		end
-	end
+  end
 
-	describe '#multiply_els' do
-		context 'when an array is given as an argument' do
-			it 'returns the product of all elements' do
-				expect(multiply_els(array)).to eq(array.my_inject(:*))
-			end
-		end
-	end
+  describe '#my_map' do
+    let(:proc_call) { proc { |item| item**2 } }
+    context 'when a proc is not given as an argument' do
+      context 'and a block is given' do
+        it 'returns a new array according to the yield of the block' do
+          expect(array.my_map { |item| item**2 }).to eq([1, 4, 9, 16])
+        end
+      end
+    end
+    context 'when a proc is given as an argument' do
+      it 'returns a new array according to the yield of the proc' do
+        expect(array.my_map(proc_call)).to eq([1, 4, 9, 16])
+      end
+      context 'and a block is given' do
+        it 'returns a new array according to the yield of the proc' do
+          expect(array.my_map(proc_call) { |item| item**3 }).to eq([1, 4, 9, 16])
+        end
+      end
+    end
+  end
+
+  describe '#multiply_els' do
+    context 'when an array is given as an argument' do
+      it 'returns the product of all elements' do
+        expect(multiply_els(array)).to eq(array.my_inject(:*))
+      end
+    end
+  end
 end

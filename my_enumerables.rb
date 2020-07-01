@@ -1,4 +1,5 @@
 # rubocop:disable Metrics/ModuleLength
+# rubocop:disable Metrics/MethodLength
 module Enumerable
   def my_each
     return to_enum(:my_each) unless block_given?
@@ -99,11 +100,9 @@ module Enumerable
     size.times do |item|
       case items
       when nil
-        if block_given?
-          total += 1 if yield(self[item])
-        else
-          return size
-        end
+        return size unless block_given?
+
+        total += 1 if yield(self[item])
       when self[item]
         total += 1
       end
@@ -154,3 +153,4 @@ def multiply_els(array)
 end
 
 # rubocop:enable Metrics/ModuleLength
+# rubocop:enable Metrics/MethodLength
