@@ -3,7 +3,6 @@ require_relative '../my_enumerables.rb'
 describe Enumerable do
 	let(:array) { [1, 2, 3, 4] }
   describe '#my_each' do
-    let(:array) { [1, 2, 3, 4] }
     context 'when an array is given' do
       it 'it return the original array' do
         expect(array.my_each { |item| print item }).to eql(array)
@@ -15,7 +14,6 @@ describe Enumerable do
   end
 
   describe '#my_each_with_index' do
-    let(:array) { [1, 2, 3, 4] }
     let(:string_array) { %w[cat dog wombat] }
     context 'when an array is given' do
       it 'outputs the idexes with their items' do
@@ -28,7 +26,6 @@ describe Enumerable do
   end
 
   describe '#my_select' do
-    let(:array) { [1, 2, 3, 4] }
     context 'when array given' do
       it 'select the items from array' do
         expect(array.my_select { |item| item > 2 }).to eq([3, 4])
@@ -36,7 +33,6 @@ describe Enumerable do
     end
   end
   describe '#my_all?' do
-    let(:array) { [1, 2, 3, 4] }
     let(:array_with_nil) { [1, 2, 3, nil] }
     let(:array_of_zeroes) { [0, 0, 0, 0] }
     context 'when block is  given' do
@@ -57,7 +53,7 @@ describe Enumerable do
     end
   end
   describe '#my_any?' do
-    let(:array) { [1, 2, 3, 4] }
+
     let(:array_of_nils) { [nil, nil, nil] }
     context 'when block given' do
       it 'return true if just one item is true' do
@@ -109,6 +105,24 @@ describe Enumerable do
 	end
 
 	describe '#my_inject' do
-		
-	end
+    context "when a block is given" do
+      it "return one element" do
+        expect(array.my_inject{|sum,num| sum+=num}).to eq(10)
+      end
+      it "return one element incliding the param if given" do
+        expect(array.my_inject(2){|sum,num| sum-=num}).to eq(-8)
+      end
+      it "ignore the block when it get a symbol as a param" do
+        expect(array.my_inject(2,:+){|sum,num| sum-=num}).to eq(12)
+      end
+    end
+    context "when no block is given" do
+      it "return the sum of the array if there is no symbl" do
+        expect(array.my_inject(2)).to eq(12) 
+      end
+      it "applay the symbl param to the array" do
+        expect(array.my_inject(2,:-)).to eq(-8)
+      end
+    end
+  end
 end
