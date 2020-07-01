@@ -1,6 +1,7 @@
 require_relative '../my_enumerables.rb'
 
 describe Enumerable do
+	let(:array) { [1, 2, 3, 4] }
   describe '#my_each' do
     let(:array) { [1, 2, 3, 4] }
     context 'when an array is given' do
@@ -26,7 +27,7 @@ describe Enumerable do
     end
   end
 
-  describe 'my_select' do
+  describe '#my_select' do
     let(:array) { [1, 2, 3, 4] }
     context 'when array given' do
       it 'select the items from array' do
@@ -34,7 +35,7 @@ describe Enumerable do
       end
     end
   end
-  describe 'my_all?' do
+  describe '#my_all?' do
     let(:array) { [1, 2, 3, 4] }
     let(:array_with_nil) { [1, 2, 3, nil] }
     let(:array_of_zeroes) { [0, 0, 0, 0] }
@@ -75,5 +76,39 @@ describe Enumerable do
         expect(array_of_nils.my_any?).to eq(false)
       end
     end
-  end
+	end
+	
+	describe '#my_none?' do
+		context 'when block given' do
+			it 'returns true if no item is equal to the given argument' do
+				expect(array.my_none?(7)).to eq(true)
+			end
+
+			it 'returns false if at least one item is equal to the given argument' do
+				expect(array.my_none?(2)).to eq(false)
+			end
+		end		
+	end
+
+	describe '#my_count' do
+		context 'when no argument is given' do
+			it 'returns the count of the condition passed into the block' do
+				expect(array.my_count { |item| item > 2 }).to eq(2)
+			end
+
+			it 'returns the size of the array if no block is given' do
+				expect(array.my_count).to eq(4)
+			end
+		end
+
+		context 'when argument is given' do
+			it 'returns the count of the value passed in the argument' do
+				expect(array.my_count(3)).to eq(1)
+			end
+		end
+	end
+
+	describe '#my_inject' do
+		
+	end
 end
